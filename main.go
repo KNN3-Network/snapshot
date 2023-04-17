@@ -116,10 +116,14 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 		if !ok {
 			spaceName = ""
 		}
+		choice, ok := vote["choice"].(float64)
+		if !ok {
+			choice = 0
+		}
 		result = append(result, Vote{
 			ID:              vote["id"].(string),
 			Voter:           vote["voter"].(string),
-			Choice:          int(vote["choice"].(float64)),
+			Choice:          int(choice),
 			Created:         time.Unix(int64(vote["created"].(float64)), 0),
 			SpaceID:         space["id"].(string),
 			SpaceName:       spaceName,
