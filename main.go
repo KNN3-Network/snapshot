@@ -5,6 +5,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/KNN3-Network/snapshot/utils"
@@ -61,7 +62,7 @@ func toStringSlice(i interface{}) []string {
 	slice := i.([]interface{})
 	result := make([]string, len(slice))
 	for j, v := range slice {
-		result[j] = v.(string)
+		result[j] = strings.ToLower(v.(string))
 	}
 	return result
 }
@@ -123,17 +124,17 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 		}
 		result = append(result, Vote{
 			ID:              vote["id"].(string),
-			Voter:           vote["voter"].(string),
+			Voter:           strings.ToLower(vote["voter"].(string)),
 			Choice:          int(choice),
 			Created:         time.Unix(int64(vote["created"].(float64)), 0),
-			SpaceID:         space["id"].(string),
-			SpaceName:       spaceName,
+			SpaceID:         strings.ToLower(space["id"].(string)),
+			SpaceName:       strings.ToLower(spaceName),
 			SpaceAvatar:     space["avatar"].(string),
 			SpaceAdmins:     admins,
 			SpaceMembers:    members,
 			SpaceModerators: moderators,
 			ProposalID:      proposalID,
-			ProposalAuthor:  proposalAuthor,
+			ProposalAuthor:  strings.ToLower(proposalAuthor),
 			ProposalTitle:   proposalTitle,
 		})
 	}
