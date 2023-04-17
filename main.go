@@ -107,10 +107,11 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 		admins := toStringSlice(space["admins"])
 		moderators := toStringSlice(space["moderators"])
 		members := toStringSlice(space["members"])
-		var proposalID, proposalTitle string
+		var proposalID, proposalTitle, proposalAuthor string
 		if proposal, ok := vote["proposal"].(map[string]interface{}); ok {
 			proposalID = proposal["id"].(string)
 			proposalTitle = proposal["title"].(string)
+			proposalAuthor = proposal["author"].(string)
 		}
 		spaceName, ok := space["name"].(string)
 		if !ok {
@@ -132,6 +133,7 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 			SpaceMembers:    members,
 			SpaceModerators: moderators,
 			ProposalID:      proposalID,
+			ProposalAuthor:  proposalAuthor,
 			ProposalTitle:   proposalTitle,
 		})
 	}
