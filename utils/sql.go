@@ -19,7 +19,7 @@ func init() {
 		log.Fatal("Error loading .env file")
 	}
 	// 连接到 MySQL 服务器
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/transformer?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/lens?charset=utf8mb4&parseTime=True&loc=Local",
 		os.Getenv("DB_USERNAME"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_HOST"),

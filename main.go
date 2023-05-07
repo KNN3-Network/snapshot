@@ -11,6 +11,7 @@ import (
 	"github.com/KNN3-Network/snapshot/utils"
 	"github.com/machinebox/graphql"
 	"go.uber.org/zap"
+	"gorm.io/gorm/clause"
 )
 
 type StringSlice []string
@@ -71,7 +72,7 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 	logger.Info("查询时间", zap.Int64("created_timestamp", createdGt))
 	query := `
         query Votes($createGt: Int!) {
-            votes(first: 1000, where: { created_gt:$createGt }, orderBy: "created", orderDirection: asc) {
+            votes(first: 1000, where: { created_gte:$createGt }, orderBy: "created", orderDirection: asc) {
                 id
                 voter
 				choice
@@ -133,7 +134,7 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 			SpaceAdmins:     admins,
 			SpaceMembers:    members,
 			SpaceModerators: moderators,
-			ProposalID:      proposalID,
+			ProposalID:      strings.ToLower(proposalID),
 			ProposalAuthor:  strings.ToLower(proposalAuthor),
 			ProposalTitle:   proposalTitle,
 		})
@@ -161,7 +162,7 @@ func main() {
 			logger.Error(err.Error())
 			break
 		}
-		db.Create(&result)
+		db.Clauses(clause.OnConflict{DoNothing: true}).Create(&result)
 		logger.Info("插入成功", zap.Any("created", createGt))
 	}
 
