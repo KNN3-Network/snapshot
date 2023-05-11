@@ -74,7 +74,8 @@ func queryVotes(createdGt int64) ([]Vote, error) {
 
 	// 计算当前时间的10分钟前的时间戳
 	tenMinsAgo := time.Now().Add(-10 * time.Minute).Unix()
-
+	fmt.Println(tenMinsAgo)
+	fmt.Println(createdGt)
 	if createdGt > tenMinsAgo {
 		return nil, errors.New("查询时间不能早于当前时间的10分钟前")
 	}
@@ -169,7 +170,7 @@ func main() {
 		result, err := queryVotes(createGt)
 		if err != nil {
 			logger.Error(err.Error())
-			break
+			continue
 		}
 		db.Clauses(clause.OnConflict{DoNothing: true}).Create(&result)
 		logger.Info("插入成功", zap.Any("created", createGt))
