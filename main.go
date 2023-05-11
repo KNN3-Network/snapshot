@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -70,6 +71,14 @@ func toStringSlice(i interface{}) []string {
 
 func queryVotes(createdGt int64) ([]Vote, error) {
 	logger.Info("查询时间", zap.Int64("created_timestamp", createdGt))
+
+	// 计算当前时间的10分钟前的时间戳
+	tenMinsAgo := time.Now().Add(-10 * time.Minute).Unix()
+
+	if createdGt > tenMinsAgo {
+		return nil, errors.New("查询时间不能早于当前时间的10分钟前")
+	}
+
 	query := `
         query Votes($createGt: Int!) {
             votes(first: 1000, where: { created_gte:$createGt }, orderBy: "created", orderDirection: asc) {
